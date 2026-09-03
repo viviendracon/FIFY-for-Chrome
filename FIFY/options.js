@@ -14,7 +14,23 @@ const DEFAULT_RULES = [
   { word: "frenzy", replacement: "heightened attention" },
   { word: "breaks silence", replacement: "comments publicly" },
   { word: "broke silence", replacement: "commented publicly" },
-  { word: "goes nuclear", replacement: "escalates response" }
+  { word: "goes nuclear", replacement: "escalates response" },
+  { word: "rages", replacement: "expresses anger" },
+  { word: "screw you", replacement: "rebukes" },
+  { word: "in chaos", replacement: "experiencing disorder" },
+  { word: "freakout", replacement: "agitation" },
+  { word: "ridicules", replacement: "criticizes" },
+  { word: "loses it over", replacement: "upset over" },
+  { word: "humiliated", replacement: "embarassed" },
+  { word: "dire", replacement: "pressing" },
+  { word: "pioneering", replacement: "" },
+  { word: "trailblazer", replacement: "predecessor" },
+  { word: "trailblazing", replacement: "early" },
+  { word: "legendary", replacement: "" },
+  { word: "fierce", replacement: "intense" },
+  { word: "icon", replacement: "example" },
+  { word: "groundbreaking", replacement: "early" },
+  { word: "fiery rant", replacement: "polemic" },
 ];
 
 const tbody = document.getElementById("rulesBody");
