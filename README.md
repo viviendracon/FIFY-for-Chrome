@@ -12,5 +12,6 @@ Chrome extension that replaces dramatic headline buzzwords and all caps with mea
 2. Open Chrome and navigate to `chrome://extensions`.
 3. Enable **Developer mode** via the toggle switch in the top-right corner.
 4. Click **Load unpacked** in the top-left corner and select your folder.
-5. To manage the dictionary, find the extensions example in the top right-hand of your browser next to the address bar.
-6. Add in your rows and substitutions and save changes.
+5. To manage the dictionary, find the extensions symbol in the top right-hand of your browser next to the address bar.
+6. Find FIFY and click Options.
+7. Add in your rows and substitutions and save changes. Even if you don't amend, hit save changes the first time to load dictionary. Will update to fix this but for now, just hit save changes.
