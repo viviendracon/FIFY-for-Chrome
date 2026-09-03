@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "FIFY for Chrome",
+  "version": "1.1",
+  "description": "Replaces dramatic headline buzzwords and all caps with measured alternatives.",
+  "permissions": ["storage"],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
