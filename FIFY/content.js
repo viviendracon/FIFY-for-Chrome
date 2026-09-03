@@ -1,10 +1,12 @@
 let compiledRules = [];
 
-// 1. Kill CSS-forced uppercase styling across headline and title elements
+// 1. Kill CSS-forced uppercase styling (including Reddit title slots)
 const style = document.createElement("style");
 style.textContent = `
   h1, h2, h3, h4, h5, h6,
   [role="heading"],
+  [slot="title"],
+  [id*="post-title"],
   #video-title,
   ytd-rich-grid-media #video-title,
   yt-formatted-string,
@@ -21,8 +23,9 @@ document.head.appendChild(style);
 const PRESERVE_ACRONYMS = new Set([
   "NASA", "FBI", "CIA", "DOJ", "NATO", "EU", "UN", "USA", "UK", 
   "US", "AI", "CEO", "CFO", "CTO", "GOP", "DNC", "POTUS", "COVID", 
-  "COVID-19", "IRS", "FDA", "SEC", "EPA", "CDC", "FTC", "WHO", "CNN",
-  "ABC", "NBC", "CBS", "POTUS", "FIFY"
+  "COVID-19", "IRS", "FDA", "SEC", "EPA", "CDC", "FTC", "CNN",
+  "ABC", "NBC", "CBS", "FIFY", "MAGA", "DSA", "WW3", "WW2", "WW1", 
+  "WWIII", "WWII", "WWI", "OG"
 ]);
 
 // Minor words that stay lowercase unless at the boundary or after punctuation
@@ -31,10 +34,14 @@ const MINOR_WORDS = new Set([
   "to", "from", "by", "with", "in", "of", "as", "into", "over"
 ]);
 
+// Add Reddit's specific markup patterns here as well
 const HEADLINE_SELECTOR = [
   "h1", "h2", "h3", "h4", "h5", "h6",
   "[role=\"heading\"]",
-  "#video-title",
+  "[slot=\"title\"]",                   // Modern Reddit post titles
+  "a[id*=\"post-title\"]",              // Reddit post link IDs
+  "shreddit-post a",                    // Reddit custom element links
+  "#video-title",                       // YouTube video titles
   "ytd-rich-grid-media #video-title",
   "yt-formatted-string#video-title",
   "[class*=\"headline\" i]",
@@ -56,9 +63,7 @@ function compileRules(rawRules) {
     }));
 }
 
-// Ensure replacements never shout in all-caps, even if the buzzword was shouting
 function matchCase(original, replacement) {
-  // If original was ALL CAPS, return capitalized Title Case ("Criticizes"), not "CRITICIZES"
   if (original === original.toUpperCase() && original.length > 1) {
     return replacement.charAt(0).toUpperCase() + replacement.slice(1).toLowerCase();
   }
@@ -101,7 +106,6 @@ function sanitizeBuzzwords(text) {
   return result;
 }
 
-// Check if an element is a headline or contained inside one
 function isHeadlineNode(node) {
   const el = node.parentElement;
   if (!el) return false;
@@ -114,13 +118,18 @@ function processTextNode(node) {
 
   const isHeadline = isHeadlineNode(node);
 
-  // If inside a headline, convert the casing first
+  // 1. Initial casing pass
   if (isHeadline) {
     text = toTitleCase(text);
   }
 
-  // Replace buzzwords
+  // 2. Replace buzzwords
   text = sanitizeBuzzwords(text);
+
+  // 3. Second casing pass to format the newly inserted replacement words
+  if (isHeadline) {
+    text = toTitleCase(text);
+  }
 
   if (text !== node.nodeValue) {
     node.nodeValue = text;
@@ -132,6 +141,11 @@ function walkNode(node) {
 
   const tagName = node.nodeName.toUpperCase();
   if (["SCRIPT", "STYLE", "TEXTAREA", "INPUT"].includes(tagName)) return;
+
+  // Traverse into Web Component shadow roots if present
+  if (node.shadowRoot) {
+    walkNode(node.shadowRoot);
+  }
 
   if (node.nodeType === Node.TEXT_NODE) {
     processTextNode(node);
